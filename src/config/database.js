@@ -1,3 +1,4 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
-module.exports = mongoose.connect('mongodb://locallhost/healpheal')
+module.exports = mongoose.connect("mongodb://localhost:27017/helpheal",
+  { useNewUrlParser: true })
