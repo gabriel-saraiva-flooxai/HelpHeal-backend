@@ -16,7 +16,10 @@ app.get('/', (req, res) => {
 })
 
 const authRoutes = require('./routes/auth')
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes)
+
+const vacancyRoutes = require('./routes/vacancy')
+app.use('/api/vacancies', vacancyRoutes)
 
 const port = process.env.PORT
 app.listen(port, () => {
