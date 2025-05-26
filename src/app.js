@@ -21,6 +21,12 @@ app.use('/api/auth', authRoutes)
 const vacancyRoutes = require('./routes/vacancy')
 app.use('/api/vacancies', vacancyRoutes)
 
+const applicationRoutes = require('./routes/application')
+app.use('/api/applications', applicationRoutes)
+
+const userRoutes = require('./routes/user')
+app.use('/api/users', userRoutes)
+
 const port = process.env.PORT
 app.listen(port, () => {
   console.log(`Backend is running on port ${port}`)
