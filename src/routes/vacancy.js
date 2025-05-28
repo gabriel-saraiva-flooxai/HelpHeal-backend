@@ -9,4 +9,6 @@ router.get('/', vacancyController.list)
 // Protegido: criar nova vaga
 router.post('/', authMiddleware, vacancyController.create)
 
+router.get('/hospital', authMiddleware, vacancyController.listByHospital)
+
 module.exports = router

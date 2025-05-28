@@ -2,6 +2,23 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
 module.exports = {
+    // Novo endpoint para pegar usuário atual
+    async getCurrentUser(req, res) {
+        try {
+            const user = await User.findById(req.user._id)
+                .select('-password') // Remove o campo da senha
+                .populate('hospital_id', 'name') // Popula dados do hospital se necessário
+
+            if (!user) {
+                return res.status(404).json({ error: 'Usuário não encontrado' })
+            }
+
+            res.json(user)
+        } catch (error) {
+            res.status(400).json({ error: error.message })
+        }
+    },
+
     async createInternalUser(req, res) {
         try {
             if (req.user.role !== 'admin') {
@@ -31,7 +48,7 @@ module.exports = {
             })
 
             await user.save()
-            res.status(201).send('Usuário interno criado com sucesso')
+            res.status(201).json({ message: 'Usuário interno criado', userId: user._id })
         } catch (error) {
             res.status(400).send(error.message)
         }
