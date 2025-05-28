@@ -4,14 +4,14 @@ module.exports = {
     // Voluntário se candidata
     async apply(req, res) {
         try {
-            const { vacancy_id } = req.body
-            const volunteer_id = req.user.id
+            const vacancy   = req.body.vacancyId
+            const volunteer = req.user.id
 
             // Impedir duplicação
-            const exists = await Application.findOne({ volunteer_id, vacancy_id })
+            const exists = await Application.findOne({ volunteer, vacancy })
             if (exists) return res.status(400).json({ error: 'Você já se candidatou' })
         
-            const app = await Application.create({ volunteer_id, vacancy_id })
+            const app = await Application.create({ volunteer, vacancy })
             res.status(201).json(app)
         } catch (error) {
             res.status(400).json({ error: error.message })
@@ -21,8 +21,8 @@ module.exports = {
     // Voluntário vê próprias candidaturas
     async myApplications(req, res) {
         try {
-            const volunteer_id = req.user.id
-            const apps = await Application.find({ volunteer_id }).populate('vacancy_id')
+            const volunteer = req.user.id
+            const apps = await Application.find({ volunteer }).populate('vacancy')
             res.json(apps)
         } catch (error) {
             res.status(400).json({ error: error.message })
@@ -33,7 +33,7 @@ module.exports = {
     async listByVacancy(req, res) {
         try {
             const { vacancyId } = req.params
-            const apps = await Application.find({ vacancy_id: vacancyId }).populate('volunteer_id')
+            const apps = await Application.find({ vacancy: vacancyId }).populate('volunteer')
             res.json(apps)
         } catch (error) {
             res.status(400).json({ error: error.message })
@@ -43,7 +43,20 @@ module.exports = {
     // Aprovar ou rejeitar candidatura
     async updateStatus(req, res) {
         try {
-            
+            const { applicationId } = req.params
+            const { status } = req.body
+
+            if (!['approved', 'rejected'].includes(status)) {
+                return res.status(400).json({ error: 'Status inválido' })
+            }
+
+            const updated = await Application.findByIdAndUpdate(
+                applicationId,
+                { status },
+                { new: true }
+            )
+
+            res.json(updated)
         } catch (error) {
             res.status(400).json({ error: error.message })
         }
