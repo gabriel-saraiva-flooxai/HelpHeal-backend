@@ -2,6 +2,11 @@ const Vacancy = require('../models/Vacancy')
 
 module.exports = {
   async create(req, res) {
+    
+    if (!['admin', 'internal_user'].includes(req.user.role)) {
+      return res.status(403).json({ error: 'Apenas usuário interno ou admin podem criar vagas' })
+    }
+
     try {
       const { title, description, type, points } = req.body
       const created_by = req.user.id  // ID do usuário autenticado
