@@ -1,5 +1,8 @@
+const User = require('../models/User')
+
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+
 
 module.exports = {
   secret: process.env.JWT_SECRET || 'cHaVe_JwT_sEcReTa',
